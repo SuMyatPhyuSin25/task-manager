@@ -1,6 +1,6 @@
 import { addList, editList, deleteList, checkDoneList} from "./lists.js";
 import { listGroup } from "./selectors.js";
-
+import Swal from 'sweetalert2';
 
 
 export const listGroupHandler = (event) => {
@@ -37,7 +37,6 @@ if(event.target.classList.contains("list-edit-btn")){
 }
 
 
-    
 
 }
 
@@ -85,28 +84,77 @@ export const deleteAllHandler = () => {
 
     // console.log(allLists);
 
-    if(confirm("Are u sure u want to delete all lists?")){
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then((result) => {
 
-        allLists.forEach((list)=>{
+        if (result.isConfirmed) {
 
-            list.remove();
-        })
-    }
+            allLists.forEach((list)=>{
+
+                list.classList.add("animate__animated", "animate__backOutDown");
+
+                list.addEventListener("animationend", () => {
+        
+                    list.remove();
+        
+                    updateDoneTaskTotal();
+        
+                    updateTaskTotal();
+                  
+                    })
+                       
+             })
+
+
+        
+
+        }
+      });
+
+  
+
+
+
 }
 
 export const doneAllHandler = () => {
 
-    if(confirm("Are u sure u wanna done all lists")){
+    const allLists = listGroup.querySelectorAll(".list");
 
-        const allLists = listGroup.querySelectorAll(".list");
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, all check it!"
+      }).then((result) => {
 
-        allLists.forEach((list)=>{
+        if (result.isConfirmed) {
 
-            list.querySelector(".list-done-check").checked= true;
+            allLists.forEach((list)=>{
 
-            checkDoneList(list.id);
+                list.querySelector(".list-done-check").checked= true;
 
-        });
-    }
+                        checkDoneList(list.id);
+                       
+             })
+
+
+        
+
+        }
+      });
+
+
+    
 }
 
